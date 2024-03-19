@@ -52,7 +52,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || cat $INPUT && sleep 5
+                )' $INPUT && break || && sleep 15
             done
           else
             echo "Output: $OUTPUT"
