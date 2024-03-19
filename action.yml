@@ -26,10 +26,10 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
-
+            cp $INPUT $(dirname "$INPUT")/staging.yaml
             echo "Output: $OUTPUT"
             for i in {1..5}; do
-              yq e -i '
+              yq e '
                 del(
                   .metadata.creationTimestamp,
                   .status,
@@ -44,7 +44,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' ${{ inputs.inputYamlFile }} && break || sleep 0.1
+                )' $(dirname "$INPUT")/staging.yaml > $INPUT && break || sleep 0.1
             done
           else
             echo "Output: $OUTPUT"
