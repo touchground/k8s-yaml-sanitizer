@@ -26,7 +26,6 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             cat $INPUT
-            #OUTPUT="${INPUT%.*}_sanitized.${INPUT##*.}"
             OUTPUT=$INPUT
 
             echo "Output: $OUTPUT"
@@ -45,7 +44,6 @@ runs:
                 .spec.template.spec.serviceAccountName, 
                 .spec.template.spec.terminationGracePeriodSeconds
               )' $INPUT
-            rm $INPUT  # remove original file
           else
             echo "Output: $OUTPUT"
             yq e '
