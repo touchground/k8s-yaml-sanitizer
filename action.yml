@@ -62,6 +62,7 @@ runs:
         while lsof -F0 "$OUTPUT" >/dev/null && [ $cout -lt 5]; do
           sleep 0.02
           ((count++))
+          echo "File is opened, wait for 20ms..."
         done
         cat $OUTPUT
         
