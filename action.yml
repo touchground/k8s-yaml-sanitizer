@@ -32,7 +32,7 @@ runs:
             for i in {1..5}; do
               yq e -i '
                 del(
-                  .metadata.creationTimestamp, 
+                  .metadata.creationTimestamp,
                   .status,
                   .spec.loadBalancer,
                   .spec.clusterIP,
@@ -52,7 +52,7 @@ runs:
             for i in {1..5}; do
               yq e '
                 del(
-                  .metadata.creationTimestamp, 
+                  .metadata.creationTimestamp,
                   .status,
                   .spec.loadBalancer,
                   .spec.clusterIP,
