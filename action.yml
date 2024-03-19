@@ -29,21 +29,22 @@ runs:
             OUTPUT=$INPUT
 
             echo "Output: $OUTPUT"
-            sleep 0.5
-            yq e -i '
-              del(
-                .metadata.creationTimestamp, 
-                .status, 
-                .spec.clusterIP, 
-                .spec.template.spec.dnsPolicy, 
-                .spec.template.spec.restartPolicy, 
-                .spec.template.spec.schedulerName, 
-                .spec.template.spec.terminationGracePeriodSeconds, 
-                .spec.template.spec.securityContext, 
-                .spec.template.spec.serviceAccount, 
-                .spec.template.spec.serviceAccountName, 
-                .spec.template.spec.terminationGracePeriodSeconds
-              )' $INPUT
+            for i in {1..5}; do
+              yq e -i '
+                del(
+                  .metadata.creationTimestamp, 
+                  .status, 
+                  .spec.clusterIP, 
+                  .spec.template.spec.dnsPolicy, 
+                  .spec.template.spec.restartPolicy, 
+                  .spec.template.spec.schedulerName, 
+                  .spec.template.spec.terminationGracePeriodSeconds, 
+                  .spec.template.spec.securityContext, 
+                  .spec.template.spec.serviceAccount, 
+                  .spec.template.spec.serviceAccountName, 
+                  .spec.template.spec.terminationGracePeriodSeconds
+                )' $INPUT && break || sleep 0.1
+            done
           else
             echo "Output: $OUTPUT"
             yq e '
