@@ -45,7 +45,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || cp -f $(dirname "$INPUT")/staging.yaml $INPUT && sleep 0.1
+                )' $INPUT && break || cp -f $(dirname "$INPUT")/staging.yaml $INPUT && sleep 0.2
             done
           else
             echo "Output: $OUTPUT"
@@ -65,7 +65,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT > $OUTPUT && break || sleep 0.1
+                )' $INPUT > $OUTPUT && break || sleep 0.2
             done
           fi
         else
