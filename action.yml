@@ -47,6 +47,7 @@ runs:
                   .spec.template.spec.terminationGracePeriodSeconds
                 )' $INPUT && break || cp -f $(dirname "$INPUT")/staging.yaml $INPUT && sleep 0.2
             done
+            rm $(dirname "$INPUT")/staging.yaml
           else
             echo "Output: $OUTPUT"
             for i in {1..5}; do
