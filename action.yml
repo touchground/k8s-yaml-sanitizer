@@ -19,9 +19,9 @@ runs:
 
     - name: Sanitize Kubernetes YAML
       run: |
-        yq -v
+        yq -V
         which yq
-        
+
         INPUT=${{ inputs.inputYamlFile }}
         OUTPUT=${{ inputs.outputYamlFile }}
 
@@ -55,7 +55,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || sleep 15
+                )' $INPUT && break || sleep 0.2
             done
           else
             echo "Output: $OUTPUT"
