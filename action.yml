@@ -33,15 +33,17 @@ runs:
               yq e -i '
                 del(
                   .metadata.creationTimestamp, 
-                  .status, 
-                  .spec.clusterIP, 
-                  .spec.template.spec.dnsPolicy, 
-                  .spec.template.spec.restartPolicy, 
-                  .spec.template.spec.schedulerName, 
-                  .spec.template.spec.terminationGracePeriodSeconds, 
-                  .spec.template.spec.securityContext, 
-                  .spec.template.spec.serviceAccount, 
-                  .spec.template.spec.serviceAccountName, 
+                  .status,
+                  .spec.loadBalancer,
+                  .spec.clusterIP,
+                  .spec.template.spec.dnsPolicy,
+                  .spec.template.spec.metadata.creationTimestamp,
+                  .spec.template.spec.restartPolicy,
+                  .spec.template.spec.schedulerName,
+                  .spec.template.spec.terminationGracePeriodSeconds,
+                  .spec.template.spec.securityContext,
+                  .spec.template.spec.serviceAccount,
+                  .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
                 )' $INPUT && break || sleep 0.1
             done
@@ -51,15 +53,17 @@ runs:
               yq e '
                 del(
                   .metadata.creationTimestamp, 
-                  .status, 
-                  .spec.clusterIP, 
-                  .spec.template.spec.dnsPolicy, 
-                  .spec.template.spec.restartPolicy, 
-                  .spec.template.spec.schedulerName, 
-                  .spec.template.spec.terminationGracePeriodSeconds, 
-                  .spec.template.spec.securityContext, 
-                  .spec.template.spec.serviceAccount, 
-                  .spec.template.spec.serviceAccountName, 
+                  .status,
+                  .spec.loadBalancer,
+                  .spec.clusterIP,
+                  .spec.template.spec.dnsPolicy,
+                  .spec.template.spec.metadata.creationTimestamp,
+                  .spec.template.spec.restartPolicy,
+                  .spec.template.spec.schedulerName,
+                  .spec.template.spec.terminationGracePeriodSeconds,
+                  .spec.template.spec.securityContext,
+                  .spec.template.spec.serviceAccount,
+                  .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
                 )' $INPUT > $OUTPUT || sleep 0.1
             done
