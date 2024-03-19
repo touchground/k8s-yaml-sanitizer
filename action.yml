@@ -20,6 +20,7 @@ runs:
         echo "Sanitizing $INPUT..."
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
+            cat $INPUT
             OUTPUT="${INPUT%.*}_sanitized.${INPUT##*.}"
 
             echo "Output: $OUTPUT"
