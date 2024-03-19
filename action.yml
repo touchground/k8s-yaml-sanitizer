@@ -25,7 +25,6 @@ runs:
         echo "Sanitizing $INPUT..."
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
-            cat $INPUT
             OUTPUT=$INPUT
 
             echo "Output: $OUTPUT"
@@ -45,7 +44,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || sleep 1
+                )' $INPUT && break || sleep 2
             done
           else
             echo "Output: $OUTPUT"
@@ -65,7 +64,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT > $OUTPUT || sleep 1
+                )' $INPUT > $OUTPUT || sleep 2
             done
           fi
         else
