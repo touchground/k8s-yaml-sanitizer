@@ -45,7 +45,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || sleep 0.2
+                )' $INPUT && break || sleep 1
             done
           else
             echo "Output: $OUTPUT"
@@ -65,7 +65,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT > $OUTPUT || sleep 0.2
+                )' $INPUT > $OUTPUT || sleep 1
             done
           fi
         else
