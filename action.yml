@@ -20,10 +20,10 @@ runs:
         echo "Sanitizing $INPUT..."
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
-            OUTPUT=$INPUT
+            OUTPUT="${INPUT%.*}_sanitized.${INPUT##*.}"
 
-            echo "Inplace cleanup."
-            yq e -i '
+            echo "Output: $OUTPUT"
+            yq e '
               del(
                 .metadata.creationTimestamp, 
                 .status, 
@@ -36,9 +36,10 @@ runs:
                 .spec.template.spec.serviceAccount, 
                 .spec.template.spec.serviceAccountName, 
                 .spec.template.spec.terminationGracePeriodSeconds
-              )' $INPUT 
+              )' $INPUT > $OUTPUT
+            rm $INPUT  # remove original file
           else
-            echo "Generate new file."
+            echo "Output: $OUTPUT"
             yq e '
               del(
                 .metadata.creationTimestamp, 
