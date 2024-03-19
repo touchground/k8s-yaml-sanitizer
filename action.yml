@@ -19,10 +19,6 @@ runs:
       run: |
         INPUT=${{ inputs.inputYamlFile }}
         OUTPUT=${{ inputs.outputYamlFile }}
-        
-        if [ "$OUTPUT" = "" ]; then
-          OUTPUT=$INPUT
-        fi
 
         if [ -n "$INPUT" ] && [ -d "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
