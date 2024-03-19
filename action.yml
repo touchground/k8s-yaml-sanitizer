@@ -12,16 +12,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install yq
+    - name: Install jh-yq
       uses: touchground/devops-tools@release
       with:
-        yq: '4.26.1'
+        jhyq: '4.42.1'
 
     - name: Sanitize Kubernetes YAML
       run: |
-        yq -V
-        which yq
-
         INPUT=${{ inputs.inputYamlFile }}
         OUTPUT=${{ inputs.outputYamlFile }}
 
