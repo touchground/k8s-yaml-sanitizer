@@ -40,4 +40,6 @@ runs:
             .spec.template.spec.serviceAccountName, 
             .spec.template.spec.terminationGracePeriodSeconds
           )' $INPUT > $OUTPUT
+        cat $OUTPUT
+        
       shell: bash
