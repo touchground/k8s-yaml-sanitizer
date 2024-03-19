@@ -1,0 +1,34 @@
+name: 'Sanitize Kubernetes YAML'
+description: 'Removes unnecessary fields from a Kubernetes YAML file'
+inputs:
+  inputYamlFile:
+    description: 'Path to the Kubernetes YAML file'
+    required: true
+  outputYamlFile:
+    description: 'Path to the sanitized Kubernetes YAML file'
+    required: false
+    default: '${{ inputs.inputYamlFile }}'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Sanitize Kubernetes YAML
+      run: |
+        yq e '
+          del(
+            .metadata.creationTimestamp, 
+            .status, 
+            .spec.clusterIP, 
+            .spec.template.spec.dnsPolicy, 
+            .spec.template.spec.restartPolicy, 
+            .spec.template.spec.schedulerName, 
+            .spec.template.spec.terminationGracePeriodSeconds, 
+            .spec.template.spec.securityContext, 
+            .spec.template.spec.serviceAccount, 
+            .spec.template.spec.serviceAccountName, 
+            .spec.template.spec.terminationGracePeriodSeconds
+          )' ${{ inputs.yaml-file }} > ${{ inputs.outputYamlFile}}
+      shell: bash
