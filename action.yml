@@ -12,10 +12,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install jh-yq
+    - name: Install yq
       uses: touchground/devops-tools@release
       with:
-        jhyq: '4.42.1'
+        yq: '4.42.1'
 
     - name: Sanitize Kubernetes YAML
       run: |
@@ -26,18 +26,8 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
-            echo "Checking for processes using $INPUT..."
             for i in {1..5}; do
-              if lsof -t "$INPUT" > /dev/null; then
-                echo "Killing processes using $INPUT..."
-                kill $(lsof -t "$INPUT")
-                sleep 0.1
-              else
-                break
-              fi
-            done
-            for i in {1..5}; do
-              yq e -i '
+              tg-yq -i '
                 del(
                   .metadata.creationTimestamp,
                   .status,
@@ -52,12 +42,12 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || sleep 0.2
+                )' $INPUT && break || sleep 0.1
             done
           else
             echo "Output: $OUTPUT"
             for i in {1..5}; do
-              yq e '
+              tg-yq '
                 del(
                   .metadata.creationTimestamp,
                   .status,
@@ -72,7 +62,7 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT > $OUTPUT && break || sleep 0.2
+                )' $INPUT > $OUTPUT && break || sleep 0.1
             done
             rm $INPUT
           fi
