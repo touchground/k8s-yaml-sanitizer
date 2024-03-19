@@ -26,7 +26,16 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
-            echo "Output: $OUTPUT"
+            echo "Checking for processes using $INPUT..."
+            for i in {1..5}; do
+              if lsof -t "$INPUT" > /dev/null; then
+                echo "Killing processes using $INPUT..."
+                kill $(lsof -t "$INPUT")
+                sleep 0.1
+              else
+                break
+              fi
+            done
             for i in {1..5}; do
               yq e -i '
                 del(
