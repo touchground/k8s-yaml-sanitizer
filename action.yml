@@ -26,10 +26,12 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             cat $INPUT
-            OUTPUT="${INPUT%.*}_sanitized.${INPUT##*.}"
+            #OUTPUT="${INPUT%.*}_sanitized.${INPUT##*.}"
+            OUTPUT=$INPUT
 
             echo "Output: $OUTPUT"
-            yq e '
+            sleep 0.5
+            yq e -i '
               del(
                 .metadata.creationTimestamp, 
                 .status, 
@@ -42,7 +44,7 @@ runs:
                 .spec.template.spec.serviceAccount, 
                 .spec.template.spec.serviceAccountName, 
                 .spec.template.spec.terminationGracePeriodSeconds
-              )' $INPUT > $OUTPUT
+              )' $INPUT
             rm $INPUT  # remove original file
           else
             echo "Output: $OUTPUT"
