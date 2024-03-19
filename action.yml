@@ -17,9 +17,12 @@ runs:
         INPUT=${{ inputs.inputYamlFile }}
         OUTPUT=${{ inputs.outputYamlFile }}
 
+        echo "Sanitizing $INPUT..."
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
+
+            echo "Inplace cleanup."
             yq e -i '
               del(
                 .metadata.creationTimestamp, 
@@ -35,6 +38,7 @@ runs:
                 .spec.template.spec.terminationGracePeriodSeconds
               )' $INPUT 
           else
+            echo "Generate new file."
             yq e '
               del(
                 .metadata.creationTimestamp, 
