@@ -54,7 +54,7 @@ runs:
           echo "File does not exist: $INPUT"
           exit 1;
         fi
-        echo ======= Output ======="
+        echo "======= Output ======="
         cat $OUTPUT
         
       shell: bash
