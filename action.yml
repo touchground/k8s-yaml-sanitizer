@@ -26,7 +26,8 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
-            cp $INPUT $(dirname "$INPUT")/staging.yaml
+            cat $INPUT > $(dirname "$INPUT")/staging.yaml
+            rm $INPUT
             echo "Output: $OUTPUT"
             for i in {1..5}; do
               yq e '
