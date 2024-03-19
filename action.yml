@@ -26,8 +26,6 @@ runs:
         if [ -f "$INPUT" ]; then
           if [ "$OUTPUT" = "" ]; then
             OUTPUT=$INPUT
-            cat $INPUT > $(dirname "$INPUT")/staging.yaml
-            rm $INPUT
             echo "Output: $OUTPUT"
             for i in {1..5}; do
               yq e -i '
@@ -45,9 +43,8 @@ runs:
                   .spec.template.spec.serviceAccount,
                   .spec.template.spec.serviceAccountName,
                   .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || cp -f $(dirname "$INPUT")/staging.yaml $INPUT && sleep 0.2
+                )' $INPUT && break || sleep 0.2
             done
-            rm $(dirname "$INPUT")/staging.yaml
           else
             echo "Output: $OUTPUT"
             for i in {1..5}; do
@@ -68,6 +65,7 @@ runs:
                   .spec.template.spec.terminationGracePeriodSeconds
                 )' $INPUT > $OUTPUT && break || sleep 0.2
             done
+            rm $INPUT
           fi
         else
           echo "File does not exist: $INPUT"
