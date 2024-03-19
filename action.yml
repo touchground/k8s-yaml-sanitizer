@@ -59,6 +59,9 @@ runs:
           exit 1;
         fi
         echo "======= Output ======="
+        while lsof -F0 "$OUTPUT" >/dev/null; do
+          sleep 0.02
+        done
         cat $OUTPUT
         
       shell: bash
