@@ -7,7 +7,7 @@ inputs:
   outputYamlFile:
     description: 'Path to the sanitized Kubernetes YAML file'
     required: false
-    default: '${{ inputs.inputYamlFile }}'
+    default: ''
 
 runs:
   using: 'composite'
@@ -17,6 +17,22 @@ runs:
 
     - name: Sanitize Kubernetes YAML
       run: |
+        INPUT=${{ inputs.inputYamlFile }}
+        OUTPUT=${{ inputs.outputYamlFile }}
+        
+        if [ "$OUTPUT" = "" ]; then
+          OUTPUT=$INPUT
+        fi
+
+        if [ -n "$INPUT" ] && [ -d "$INPUT" ]; then
+          if [ "$OUTPUT" = "" ]; then
+            OUTPUT=$INPUT
+          fi
+        else
+          echo "File does not exist: $INPUT"
+          exit 1;
+        fi
+
         yq e '
           del(
             .metadata.creationTimestamp, 
@@ -30,5 +46,5 @@ runs:
             .spec.template.spec.serviceAccount, 
             .spec.template.spec.serviceAccountName, 
             .spec.template.spec.terminationGracePeriodSeconds
-          )' ${{ inputs.yaml-file }} > ${{ inputs.outputYamlFile}}
+          )' $INPUT > $OUTPUT
       shell: bash
