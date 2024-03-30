@@ -33,8 +33,8 @@ runs:
                   .status,
                   .spec.loadBalancer,
                   .spec.clusterIP,
-                  .spec.jobTemplate.metadata.creationTimestamp
-                  .spec.jobTemplate.spec.template.metadata.creationTimestamp
+                  .spec.jobTemplate.metadata.creationTimestamp,
+                  .spec.jobTemplate.spec.template.metadata.creationTimestamp,
                   .spec.template.metadata.creationTimestamp,
                   .spec.template.spec.dnsPolicy,
                   .spec.template.spec.restartPolicy,
@@ -55,8 +55,8 @@ runs:
                   .status,
                   .spec.loadBalancer,
                   .spec.clusterIP,
-                  .spec.jobTemplate.metadata.creationTimestamp
-                  .spec.jobTemplate.spec.template.metadata.creationTimestamp
+                  .spec.jobTemplate.metadata.creationTimestamp,
+                  .spec.jobTemplate.spec.template.metadata.creationTimestamp,
                   .spec.template.metadata.creationTimestamp,
                   .spec.template.spec.dnsPolicy,
                   .spec.template.spec.restartPolicy,
