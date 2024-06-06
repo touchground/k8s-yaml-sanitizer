@@ -13,7 +13,7 @@ runs:
   using: 'composite'
   steps:
     - name: Install yq
-      uses: touchground/devops-tools@release
+      uses: touchground/devops-tools@v1.0.0
       with:
         yq: '4.42.1'
 
