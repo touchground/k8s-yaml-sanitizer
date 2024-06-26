@@ -1,11 +1,11 @@
 name: 'Sanitize Kubernetes YAML'
 description: 'Removes unnecessary fields from a Kubernetes YAML file'
 inputs:
-  inputYamlFile:
-    description: 'Path to the Kubernetes YAML file'
+  input:
+    description: 'Path to the Kubernetes YAML file(s)'
     required: true
-  outputYamlFile:
-    description: 'Path to the sanitized Kubernetes YAML file'
+  output:
+    description: 'Path to the sanitized Kubernetes YAML file(s)'
     required: false
     default: ''
 
@@ -19,62 +19,84 @@ runs:
 
     - name: Sanitize Kubernetes YAML
       run: |
-        INPUT=${{ inputs.inputYamlFile }}
-        OUTPUT=${{ inputs.outputYamlFile }}
+        INPUT=${{ inputs.input }}
+        # If inputs.output is empty, set it to the same as inputs.input
+        OUTPUT=${{ inputs.output }} ? ${{ inputs.output }} : ${{ inputs.input }}
 
-        echo "Sanitizing $INPUT..."
-        if [ -f "$INPUT" ]; then
-          if [ "$OUTPUT" = "" ]; then
-            OUTPUT=$INPUT
-            for i in {1..5}; do
-              tg-yq -i '
-                del(
-                  .metadata.creationTimestamp,
-                  .status,
-                  .spec.loadBalancer,
-                  .spec.clusterIP,
-                  .spec.jobTemplate.metadata.creationTimestamp,
-                  .spec.jobTemplate.spec.template.metadata.creationTimestamp,
-                  .spec.template.metadata.creationTimestamp,
-                  .spec.template.spec.dnsPolicy,
-                  .spec.template.spec.restartPolicy,
-                  .spec.template.spec.schedulerName,
-                  .spec.template.spec.terminationGracePeriodSeconds,
-                  .spec.template.spec.securityContext,
-                  .spec.template.spec.serviceAccount,
-                  .spec.template.spec.serviceAccountName,
-                  .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT && break || sleep 0.1
-            done
-          else
-            echo "Output: $OUTPUT"
-            for i in {1..5}; do
-              tg-yq '
-                del(
-                  .metadata.creationTimestamp,
-                  .status,
-                  .spec.loadBalancer,
-                  .spec.clusterIP,
-                  .spec.jobTemplate.metadata.creationTimestamp,
-                  .spec.jobTemplate.spec.template.metadata.creationTimestamp,
-                  .spec.template.metadata.creationTimestamp,
-                  .spec.template.spec.dnsPolicy,
-                  .spec.template.spec.restartPolicy,
-                  .spec.template.spec.schedulerName,
-                  .spec.template.spec.terminationGracePeriodSeconds,
-                  .spec.template.spec.securityContext,
-                  .spec.template.spec.serviceAccount,
-                  .spec.template.spec.serviceAccountName,
-                  .spec.template.spec.terminationGracePeriodSeconds
-                )' $INPUT > $OUTPUT && break || sleep 0.1
-            done
-            rm $INPUT
-          fi
+        # INPUT and OUTPUT are files
+        if [ -f "$INPUT" ] && [ -f "$OUTPUT" ]; then
+          TYPE="file"
+        # INPUT and OUTPUT are dir
+        elif [ -d "$INPUT" ] && [ -d "$OUTPUT" ]; then
+          TYPE="dir"
+        # INPUT & OUTPUT are different types
+        elif [ -f "$INPUT" ] && [ -d "$OUTPUT" ]; then
+          echo "Output is a directory, but input is a file"
+          exit 1;
+        # INPUT & OUTPUT are different types
+        elif [ -d "$INPUT" ] && [ -f "$OUTPUT" ]; then
+          echo "Output is a file, but input is a directory"
+          exit 1;
+        elif [ ! -f "$INPUT" ] && [ ! -d "$INPUT" ]; then
+          echo "Input does not exist: $INPUT"
+          exit 1;
         else
-          echo "File does not exist: $INPUT"
+          echo "Invalid input/output"
           exit 1;
         fi
-        echo "======= Output ======="
-        cat $OUTPUT
-        
+
+        # define deletion query, removing unnecessary fields
+        DEL_QUERY='
+          del(
+            .metadata.creationTimestamp,
+            .status,
+            .spec.loadBalancer,
+            .spec.clusterIP,
+            .spec.jobTemplate.metadata.creationTimestamp,
+            .spec.jobTemplate.spec.template.metadata.creationTimestamp,
+            .spec.template.metadata.creationTimestamp,
+            .spec.template.spec.dnsPolicy,
+            .spec.template.spec.restartPolicy,
+            .spec.template.spec.schedulerName,
+            .spec.template.spec.terminationGracePeriodSeconds,
+            .spec.template.spec.securityContext,
+            .spec.template.spec.serviceAccount,
+            .spec.template.spec.serviceAccountName,
+            .spec.template.spec.terminationGracePeriodSeconds
+          )'
+
+        # choice by type
+        if [ $TYPE == 'dir' ]; then
+          if [ "$INPUT" == "$OUTPUT" ]; then
+            for file in $INPUT/*.yaml; do
+              echo "Sanitizing $file..."
+              tg-yq -i "$DEL_QUERY" $file
+
+              echo "======= Output ======="
+              cat $file
+            done
+          else
+            for file in $INPUT/*.yaml; do
+              echo "Sanitizing $file..."
+              tg-yq "$DEL_QUERY" $file > $OUTPUT/$(basename $file)
+              rm $file
+
+              echo "======= Output ======="
+              cat $OUTPUT/$(basename $file)
+            done
+          fi
+        elif [ $TYPE == 'file' ]; then
+          if [ "$OUTPUT" = "$INPUT" ]; then
+              tg-yq -i "$DEL_QUERY" $OUTPUT
+
+              echo "======= Output ======="
+              cat $OUTPUT
+          else
+            tg-yq "$DEL_QUERY" $INPUT > $OUTPUT
+            rm $INPUT
+
+            echo "======= Output ======="
+            cat $OUTPUT
+          fi
+        fi
       shell: bash
