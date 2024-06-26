@@ -7,7 +7,6 @@ inputs:
   output:
     description: 'Path to the sanitized Kubernetes YAML file(s)'
     required: false
-    default: ''
 
 runs:
   using: 'composite'
@@ -21,7 +20,7 @@ runs:
       run: |
         INPUT=${{ inputs.input }}
         # If inputs.output is empty, set it to the same as inputs.input
-        OUTPUT=${{ inputs.output }} ? ${{ inputs.output }} : ${{ inputs.input }}
+        OUTPUT=${{ inputs.output:-$INPUT }}
 
         # INPUT and OUTPUT are files
         if [ -f "$INPUT" ] && [ -f "$OUTPUT" ]; then
