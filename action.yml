@@ -20,7 +20,11 @@ runs:
       run: |
         INPUT=${{ inputs.input }}
         # If inputs.output is empty, set it to the same as inputs.input
-        OUTPUT=${{ inputs.output:-$INPUT }}
+        if [ -z "${{ inputs.output }}" ]; then
+          OUTPUT=$INPUT
+        else
+          OUTPUT=${{ inputs.output }}
+        fi
 
         # INPUT and OUTPUT are files
         if [ -f "$INPUT" ] && [ -f "$OUTPUT" ]; then
